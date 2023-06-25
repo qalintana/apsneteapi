@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 
 namespace API_EF.Controller;
@@ -23,28 +24,32 @@ public class CategoryController : ControllerBase
 
     [Route("")]
     [HttpPost]
-    public Category Post([FromBody] Category model)
+    public async Task<ActionResult<Category>> Post([FromBody] Category model)
     {
-        return model;
+        if (!ModelState.IsValid)
+        {
+            return new BadRequestObjectResult(ModelState);
+        }
+        return Ok(model);
     }
 
 
     [Route("{id:int}")]
     [HttpPut]
-    public Category? Put(int id, [FromBody] Category model)
+    public async Task<ActionResult<Category?>> Put(int id, [FromBody] Category model)
     {
         if (model.Id == id)
         {
-            return model;
+            return Ok(model);
         }
-        return null;
+        return NotFound();
     }
 
 
     [Route("{id:int}")]
     [HttpDelete]
-    public string Delete()
+    public async Task<ActionResult<HttpRequest>> Delete()
     {
-        return "DELETE";
+        return Ok();
     }
 }
