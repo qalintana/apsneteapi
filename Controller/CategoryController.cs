@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 namespace API_EF.Controller;
 
@@ -8,16 +9,16 @@ public class CategoryController : ControllerBase
 
     [Route("")]
     [HttpGet]
-    public string MeuTodo()
+    public async Task<ActionResult<List<Category>>> MeuTodo()
     {
-        return "Olá Mundo";
+        return new List<Category>();
     }
 
     [Route("{id:int}")]
     [HttpGet]
-    public string GetById(int id)
+    public async Task<ActionResult<Category>> GetById(int id)
     {
-        return $"Meu sistema todo funcional {id}";
+        return new Category();
     }
 
     [Route("")]
