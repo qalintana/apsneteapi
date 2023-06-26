@@ -86,6 +86,17 @@ public class CategoryController : ControllerBase
         {
             return NotFound(new { message = "Categoria não encontrada" });
         }
-        return Ok();
+
+        try
+        {
+            context.Categories.Remove(category);
+            await context.SaveChangesAsync();
+            return Ok(new { message = "Categoria removida com sucesso" });
+        }
+        catch (Exception)
+        {
+            return BadRequest(new { message = "Não foi possível remover a categoria" });
+        }
+
     }
 }
