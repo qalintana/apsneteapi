@@ -11,16 +11,22 @@ public class CategoryController : ControllerBase
 
     [Route("")]
     [HttpGet]
-    public async Task<ActionResult<List<Category>>> Index()
+    public async Task<ActionResult<List<Category>>> Get([FromServices] DataContext context)
     {
-        return new List<Category>();
+        var categories = await context.Categories.AsNoTracking().ToListAsync();
+        return Ok(categories);
     }
 
     [Route("{id:int}")]
     [HttpGet]
-    public async Task<ActionResult<Category>> GetById(int id)
+    public async Task<ActionResult<Category>> GetById([FromServices] DataContext context, int id)
     {
-        return new Category();
+        var category = await context.Categories.FirstOrDefaultAsync(category => category.Id == id);
+        if (category == null)
+        {
+            return BadRequest(new { message = "Categoria não encontrada" });
+        }
+        return Ok(category);
     }
 
     [Route("")]
@@ -65,7 +71,7 @@ public class CategoryController : ControllerBase
 
         try
         {
-            context.Entry<Category>(model).State = EntityState.Modified;
+            context.Entry(model).State = EntityState.Modified;
             await context.SaveChangesAsync();
             return model;
         }
