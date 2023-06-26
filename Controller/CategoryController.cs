@@ -45,7 +45,6 @@ public class CategoryController : ControllerBase
             return BadRequest(new { Message = "Não foi possivel criar uma categoria" });
         }
 
-
     }
 
     [Route("{id:int}")]
@@ -80,8 +79,13 @@ public class CategoryController : ControllerBase
 
     [Route("{id:int}")]
     [HttpDelete]
-    public async Task<ActionResult<HttpRequest>> Delete()
+    public async Task<ActionResult<HttpRequest>> Delete(int id, [FromServices] DataContext context)
     {
+        var category = await context.Categories.FirstOrDefaultAsync(c => c.Id == id);
+        if (category == null)
+        {
+            return NotFound(new { message = "Categoria não encontrada" });
+        }
         return Ok();
     }
 }
