@@ -29,9 +29,13 @@ public class ProductController : ControllerBase
         }
         return BadRequest(new { message = "Produto não encontrado" });
     }
+
+    [HttpGet]
+    [Route("{id:int}")]
     public async Task<ActionResult<Product>> GetByCategory([FromServices] DataContext context, int id)
     {
-        var product = await context.Products.Include(c => c.category).
+        var product = await context.Products.
+                            Include(c => c.category).
                             AsNoTracking().Where(c => c.CategoryId == id).ToListAsync();
         if (product != null)
         {
@@ -52,7 +56,7 @@ public class ProductController : ControllerBase
         }
         else
         {
-            return BadRequest(ModelState)
+            return BadRequest(ModelState);
         }
     }
 
