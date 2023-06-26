@@ -1,6 +1,7 @@
-﻿using System.Collections.Generic;
-using Microsoft.AspNetCore.Http.HttpResults;
+﻿
+using API_EF.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_EF.Controller;
 
@@ -10,7 +11,7 @@ public class CategoryController : ControllerBase
 
     [Route("")]
     [HttpGet]
-    public async Task<ActionResult<List<Category>>> MeuTodo()
+    public async Task<ActionResult<List<Category>>> Index()
     {
         return new List<Category>();
     }
@@ -24,25 +25,56 @@ public class CategoryController : ControllerBase
 
     [Route("")]
     [HttpPost]
-    public async Task<ActionResult<Category>> Post([FromBody] Category model)
+    public async Task<ActionResult<Category>> Post(
+                [FromBody] Category model,
+                [FromServices] DataContext context)
     {
         if (!ModelState.IsValid)
         {
             return new BadRequestObjectResult(ModelState);
         }
-        return Ok(model);
-    }
 
+        try
+        {
+            context.Categories.Add(model);
+            await context.SaveChangesAsync();
+            return Ok(model);
+        }
+        catch
+        {
+            return BadRequest(new { Message = "Não foi possivel criar uma categoria" });
+        }
+
+
+    }
 
     [Route("{id:int}")]
     [HttpPut]
-    public async Task<ActionResult<Category?>> Put(int id, [FromBody] Category model)
+    public async Task<ActionResult<Category?>> Put(int id,
+                [FromBody] Category model,
+                [FromServices] DataContext context)
     {
-        if (model.Id == id)
+        if (id != model.Id)
         {
-            return Ok(model);
+            return NotFound(new { message = "Categoria não encontrada" });
         }
-        return NotFound();
+
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(ModelState);
+        }
+
+        try
+        {
+            context.Entry<Category>(model).State = EntityState.Modified;
+            await context.SaveChangesAsync();
+            return model;
+        }
+        catch (DbUpdateConcurrencyException)
+        {
+
+            return BadRequest(new { message = "Não foi possivel atualizar" });
+        }
     }
 
 
