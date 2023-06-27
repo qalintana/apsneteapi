@@ -10,11 +10,11 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 // builder.Services.AddDbContext<DataContext>(opt => opt.UseInMemoryDatabase("Database"));
+
+
 builder.Services.AddDbContext<DataContext>(
-            opt => opt.UseSqlServer(
-                builder.Configuration.GetConnectionString("connectionString")
-            )
-        );
+            opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("connectionString"))
+            );
 
 builder.Services.AddScoped<DataContext, DataContext>();
 

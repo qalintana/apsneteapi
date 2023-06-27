@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace API_EF;
 
@@ -23,5 +24,5 @@ public class Product
     [Range(1, int.MaxValue, ErrorMessage = "Categoria inválida")]
     public int CategoryId { get; set; }
 
-    public Category category { get; set; }
+    public Category? Category { get; set; }
 }

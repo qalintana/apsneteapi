@@ -12,7 +12,7 @@ public class ProductController : ControllerBase
     [Route("")]
     public async Task<ActionResult<List<Product>>> Get([FromServices] DataContext context)
     {
-        var products = await context.Products.Include(x => x.category).AsNoTracking().ToListAsync();
+        var products = await context.Products.Include(x => x.Category).AsNoTracking().ToListAsync();
         return Ok(products);
     }
 
@@ -21,7 +21,7 @@ public class ProductController : ControllerBase
     [Route("categories/{id:int}")]
     public async Task<ActionResult<Product>> GetBy([FromServices] DataContext context, int id)
     {
-        var product = await context.Products.Include(c => c.category).
+        var product = await context.Products.Include(c => c.Category).
                             AsNoTracking().FirstOrDefaultAsync(c => c.Id == id);
         if (product != null)
         {
@@ -35,7 +35,7 @@ public class ProductController : ControllerBase
     public async Task<ActionResult<Product>> GetByCategory([FromServices] DataContext context, int id)
     {
         var product = await context.Products.
-                            Include(c => c.category).
+                            Include(c => c.Category).
                             AsNoTracking().Where(c => c.CategoryId == id).ToListAsync();
         if (product != null)
         {
